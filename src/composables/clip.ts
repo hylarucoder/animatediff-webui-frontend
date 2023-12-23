@@ -1,13 +1,13 @@
-import type { TTrackBlock } from "@/composables/timeline"
+import type { TClip } from "@/composables/timeline"
 
-export const useActiveBlockStore = defineStore("activeBlock", () => {
-  const block = ref<TTrackBlock | null>(null)
+export const useActiveClip = defineStore("activeClip", () => {
+  const block = ref<TClip | null>(null)
   const focused = ref(false)
   const refInput = ref(null)
-  const activeBlock = (_block: TTrackBlock) => {
+  const activeBlock = (_block: TClip) => {
     block.value = _block
   }
-  const blur = (_block: TTrackBlock) => {
+  const blur = (_block: TClip) => {
     refInput.value?.blur()
   }
   const onFocus = () => {
@@ -37,11 +37,11 @@ export const useActiveBlockStore = defineStore("activeBlock", () => {
   }
 })
 
-export const useVirtualBlockStore = defineStore("virtualBlock", () => {
-  const block = ref<TTrackBlock | null>(null)
+export const useHoverClip = defineStore("hoverClip", () => {
+  const block = ref<TClip | null>(null)
   const start = ref(0)
   const prompt = ref("")
-  const activeBlock = (_block: TTrackBlock) => {
+  const activeBlock = (_block: TClip) => {
     block.value = _block
   }
   const deleteBlock = () => {

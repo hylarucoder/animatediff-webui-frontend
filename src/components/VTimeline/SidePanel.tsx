@@ -1,6 +1,6 @@
 export default defineComponent({
   setup() {
-    const timelineStore = useTimelineStore()
+    const timelineStore = useStoreTimeline()
     const { leftPanelWidth } = storeToRefs(timelineStore)
 
     const optTimelines = [

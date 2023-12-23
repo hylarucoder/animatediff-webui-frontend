@@ -85,7 +85,7 @@ const calcSizeOpts = (v: string): { label: string; value: string }[] => {
   ]
 }
 
-export const useFormStore = defineStore("form", () => {
+export const useStoreForm = defineStore("form", () => {
   const videoUrl = ref("")
   const videoStatus = ref("")
   const checkpoint = ref("")
@@ -132,7 +132,7 @@ export const useFormStore = defineStore("form", () => {
       weight: 0.7,
     },
   ])
-  const { promptBlocks } = storeToRefs(useTimelineStore())
+  const { promptBlocks } = storeToRefs(useStoreTimeline())
   const loadPreset = (_preset: TPreset) => {
     preset.value = _preset.name
     checkpoint.value = _preset.checkpoint
@@ -233,7 +233,7 @@ export const useOptionsStore = defineStore("options", () => {
     aspectRatios,
     performances,
   })
-  const form = useFormStore()
+  const form = useStoreForm()
   const { loadPreset } = form
   const optionLoaded = ref(true)
   const optPerformances = computed(() => {

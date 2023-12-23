@@ -1,9 +1,9 @@
-import VTimelineTrack from "@/components/VTimeline/Track"
-import VTimelineTracksHeader from "@/components/VTimeline/TracksHeader"
+import VTimelineTrack from "@/components/VTimeline/Track.tsx"
+import VTimelineTracksHeader from "@/components/VTimeline/TracksHeader.tsx"
 
 export default defineComponent({
   setup() {
-    const timelineStore = useTimelineStore()
+    const timelineStore = useStoreTimeline()
     const { refTimeline } = storeToRefs(timelineStore)
 
     return () => (

@@ -1,12 +1,12 @@
 import { Form, FormItem, InputNumber, TabPane, Tabs } from "ant-design-vue"
-import VPromptInput from "@/components/VPromptInput"
-import VPreviewSelect from "@/components/VPreviewSelect"
+import VPromptInput from "@/components/VPromptInput.tsx"
+import VPreviewSelect from "@/components/VPreviewSelect.tsx"
 
 export default defineComponent({
   setup() {
     const optionsStore = useOptionsStore()
     const { optLoras, optCheckpoints } = storeToRefs(optionsStore)
-    const formStore = useFormStore()
+    const formStore = useStoreForm()
     const { checkpoint, prompt, negativePrompt, seed, fps, loras } = storeToRefs(formStore)
 
     const activeKey = ref("1")

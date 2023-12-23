@@ -1,14 +1,14 @@
 import { Button, Form, FormItem, InputNumber, Modal, Progress, Radio, RadioGroup } from "ant-design-vue"
-import VProgressMini from "@/components/VProgressMini"
+import VProgressMini from "./VProgressMini"
 
 export default defineComponent({
   emits: ["closeModal"],
   setup(props, { emit }) {
-    const storeVideoExport = useVideoExportStore()
+    const storeVideoExport = useVideoPipeline()
     const { task, isActive } = storeToRefs(storeVideoExport)
     const optionsStore = useOptionsStore()
     const { optPerformances } = optionsStore
-    const formStore = useFormStore()
+    const formStore = useStoreForm()
     const { sizeOpts, size, duration, performance } = storeToRefs(formStore)
 
     const handleCloseModal = () => {
@@ -24,25 +24,21 @@ export default defineComponent({
       }
       return task.value.completed >= 100 ? "success" : "active"
     })
-    const refSubtasks = ref<HTMLElement[]>([])
+    watch(status, (value, oldValue) => {
+      if (value == "success" && oldValue == "active") {
+      }
+    })
     const refBtn = ref<HTMLElement | null>(null)
     const isHovered = useElementHover(refBtn)
-    watch(
-      task,
-      () => {
-        nextTick(() => {
-          if (refSubtasks.value?.length) {
-            refSubtasks.value[refSubtasks.value?.length - 1].scrollIntoView({ behavior: "smooth" })
-          }
-        })
-      },
-      {
-        deep: true,
-      },
-    )
+    const lastTask = computed(() => {
+      if (task.value.subtasks.length == 0) {
+        return null
+      }
+      return task.value.subtasks[task.value.subtasks.length - 1]
+    })
 
     return () => (
-      <Modal centered open title="Export" onCancel={handleCloseModal}>
+      <Modal centered open title="Export" onCancel={handleCloseModal} maskClosable={false}>
         {{
           default: () => (
             <div class="flex h-[400px] w-[500px] select-none">
@@ -87,13 +83,11 @@ export default defineComponent({
           footer: () => (
             <div class="flex justify-between">
               <div ref="refStatusBar" class="h-[30px] w-[230px] overflow-y-scroll px-1">
-                {task.value.subtasks.map((sub) => {
-                  return (
-                    <div key={sub.description} ref={refSubtasks} class="flex px-2 text-left">
-                      <VProgressMini completed={sub.completed} description={sub.description} />
-                    </div>
-                  )
-                })}
+                {lastTask.value && (
+                  <div key={lastTask.value.description} class="flex px-2 text-left">
+                    <VProgressMini completed={lastTask.value.completed} description={lastTask.value.description} />
+                  </div>
+                )}
               </div>
               <div class="w-[100px]" ref={refBtn}>
                 {(isHovered.value && isActive.value) || task.value.interruptProcessing ? (

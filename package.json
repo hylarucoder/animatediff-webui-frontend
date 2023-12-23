@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@neoconfetti/vue": "^2.2.0",
     "@unhead/vue": "^1.8.9",
     "@vueuse/core": "^10.7.0",
     "@vueuse/head": "^2.0.0",
@@ -24,6 +25,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^2.4.6",
     "@egoist/tailwindcss-icons": "^1.7.1",
     "@iconify/json": "^2.2.159",
     "@intlify/unplugin-vue-i18n": "^1.6.0",

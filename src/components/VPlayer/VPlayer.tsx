@@ -1,6 +1,6 @@
 import { Button, Popover, Radio, RadioGroup, Slider, Spin } from "ant-design-vue"
 import type { PropType } from "vue"
-import { formatDurationHHMMSS } from "@/utils/date"
+import { formatDurationHHMMSS } from "@/utils/date.ts"
 
 const VCameraControlItem = defineComponent({
   props: {
@@ -72,13 +72,13 @@ export default defineComponent({
   setup() {
     const optionsStore = useOptionsStore()
     const { optAspectRadios } = optionsStore
-    const formStore = useFormStore()
+    const formStore = useStoreForm()
     const { aspectRatio, cameraControl } = storeToRefs(formStore)
 
     const videoPlayerStore = useVideoPlayer()
     const { videoRef, waiting, src, currentTime, playing, duration } = storeToRefs(videoPlayerStore)
     const { loadVideo, play, pause, toggle } = videoPlayerStore
-    const videoExportStore = useVideoExportStore()
+    const videoExportStore = useVideoPipeline()
     const { task } = storeToRefs(videoExportStore)
 
     const downloadUrl = () => {

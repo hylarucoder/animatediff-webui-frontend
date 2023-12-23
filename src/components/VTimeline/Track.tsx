@@ -1,17 +1,17 @@
-import VTimelineBlock from "@/components/VTimeline/Block"
-import { TTrackBlock } from "@/composables/timeline"
+import VClip from "@/components/VTimeline/Clip.tsx"
+import { TClip } from "@/composables/timeline.ts"
 
 export default defineComponent({
   setup() {
-    const timelineStore = useTimelineStore()
+    const timelineStore = useStoreTimeline()
     const { unitWidth, promptBlocks } = storeToRefs(timelineStore)
     const { alignBlock, addPromptBlocks, hasPromptBlocks, removePromptBlocks } = timelineStore
 
-    const activeBlockStore = useActiveBlockStore()
-    const { block: activeBlock } = activeBlockStore
+    const activeBlockStore = useActiveClip()
+    const { block: activeBlock } = storeToRefs(activeBlockStore)
 
-    const virtualBlockStore = useVirtualBlockStore()
-    const { block: virtualBlock } = virtualBlockStore
+    const virtualBlockStore = useHoverClip()
+    const { block: virtualBlock } = storeToRefs(virtualBlockStore)
 
     const refTimelineTrack = ref<HTMLElement | null>(null)
 
@@ -60,13 +60,13 @@ export default defineComponent({
       if (!activeBlock || activeBlockStore.focused) {
         return
       }
-      if (activeBlock.start) {
-        removePromptBlocks(activeBlock.start)
+      if (activeBlock.value?.start) {
+        removePromptBlocks(activeBlock.value?.start)
         activeBlockStore.deleteBlock()
       }
     })
 
-    const onBlockSelect = (block: TTrackBlock) => {
+    const onBlockSelect = (block: TClip) => {
       activeBlockStore.activeBlock(block)
       virtualBlockStore.deleteBlock()
     }
@@ -77,7 +77,7 @@ export default defineComponent({
       isDragging.value = true
     }
 
-    const dragEnd = (block: TTrackBlock, newStart: number) => {
+    const dragEnd = (block: TClip, newStart: number) => {
       const start = Math.floor((newStart * 5) / 125) * 125
       alignBlock(block.start, start)
       isDragging.value = false
@@ -88,8 +88,8 @@ export default defineComponent({
         ref={refTimelineTrack}
         class="min-w-screen relative flex h-[--timeline-track-height] rounded border-b-[1px] border-zinc-200 text-white"
       >
-        {promptBlocks.value.map((block, index) => (
-          <VTimelineBlock
+        {promptBlocks.value.map((block: TClip, index) => (
+          <VClip
             key={index}
             isVirtual={false}
             unitWidth={unitWidth.value}
@@ -99,11 +99,11 @@ export default defineComponent({
             onDragStart={dragStart}
           />
         ))}
-        {virtualBlock && !isDragging.value && (
-          <VTimelineBlock
+        {virtualBlock.value && !isDragging.value && (
+          <VClip
             isVirtual={true}
             unitWidth={unitWidth.value}
-            block={virtualBlock}
+            block={virtualBlock.value}
             onClick={confirmVirtualBlock}
           />
         )}

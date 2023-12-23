@@ -1,5 +1,5 @@
 import { Tabs, TabPane } from "ant-design-vue"
-import VPlayer from "@/components/VPlayer"
+import VPlayer from "@/components/VPlayer/VPlayer"
 
 export default defineComponent({
   setup() {

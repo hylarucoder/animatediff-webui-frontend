@@ -1,15 +1,15 @@
-import { useOptionsStore } from "@/composables/options"
-import { useActiveBlockStore } from "@/composables/block"
+import { useOptionsStore } from "@/composables/options.ts"
+import { useActiveClip } from "@/composables/clip.ts"
 import { Button, Result, Spin } from "ant-design-vue"
 import VMenubar from "@/components/VMenubar"
-import VMainPlayer from "@/components/VMainPlayer"
-import VRightSidebar from "@/components/VRightSidebar"
+import VMainPlayer from "@/components/VPlayer/VMainPlayer"
+import VInspector from "@/components/VInspector"
 import VTimeline from "@/components/VTimeline"
 
 export default defineComponent({
   setup() {
     const optionsStore = useOptionsStore()
-    const activeBlock = useActiveBlockStore()
+    const activeBlock = useActiveClip()
 
     enum TLoadingEnum {
       PENDING = "PENDING",
@@ -71,7 +71,7 @@ export default defineComponent({
           <Result status="error" title="Loading Failed" sub-title="Please check your network">
             {{
               extra: (
-                <Button key="retry" loading={btnLoading.value} click={onClickRetry}>
+                <Button key="retry" loading={btnLoading.value} onClick={onClickRetry}>
                   Try Again
                 </Button>
               ),
@@ -80,11 +80,11 @@ export default defineComponent({
         )}
 
         {loading.value === TLoadingEnum.SUCCESS && (
-          <div class="h-screen w-full p-0 px-0 bg-white">
+          <div class="h-screen w-full bg-white p-0 px-0">
             <VMenubar class="border-1" />
             <div class="border-x-1 border-b-1 flex h-[--workspace-height] justify-between">
               <VMainPlayer />
-              <VRightSidebar />
+              <VInspector />
             </div>
             <VTimeline />
           </div>

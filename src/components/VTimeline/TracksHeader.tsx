@@ -1,6 +1,6 @@
 export default defineComponent({
   setup() {
-    const timelineStore = useTimelineStore()
+    const timelineStore = useStoreTimeline()
     const { duration, refRuler, unitWidth, fps, isMouseOutside, rulerPos } = storeToRefs(timelineStore)
     const videoPlayerStore = useVideoPlayer()
     const playAxis = usePlayAxis()
@@ -15,36 +15,32 @@ export default defineComponent({
         seek()
       }
     })
+    const onClickRuler = (e) => {
+      console.log(e)
+    }
 
     return () => (
       <div>
-        <div ref={el} style={style.value} class="absolute z-[100] h-full w-px cursor-move bg-red-500">
-          <svg
-            class="absolute -left-[12px] -top-3 h-6 w-6 fill-current text-red-500"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 50 50"
-          >
-            <polygon points="25,40 0,10 50,10" fill="red" />
-          </svg>
+        <div ref={el} style={style.value} class="absolute z-10 h-full w-[20px]">
+          <div class="absolute top-[-10px] flex h-[100px] cursor-move flex-col items-center">
+            <span class="i-lucide-diamond ml-[-10px] h-6 w-6 text-red-500"></span>
+            <div class="ml-[-10px] h-full w-[2px]  bg-red-500" />
+          </div>
         </div>
-        {isMouseOutside.value === false && (
-          <div
-            style={{ left: `${rulerPos.value}px` }}
-            class="pointer-events-none absolute z-[90] h-full w-px bg-red-500"
-          >
-            <svg
-              class="absolute -left-[12px] -top-3 h-6 w-8 fill-current text-gray-500"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 50 50"
-            >
-              <polygon points="25,40 0,10 50,10" fill="black" />
-            </svg>
+        {!isMouseOutside.value && (
+          <div style={{ left: `${rulerPos.value - 5}px` }} class="z-90 absolute h-full w-[20px]">
+            <div class="pointer-events-none absolute top-[-10px] flex h-[100px] cursor-move flex-col items-center">
+              <span class="i-lucide-diamond h-6 w-6 text-zinc-400"></span>
+              <div class="h-full w-[2px] bg-zinc-400" />
+            </div>
           </div>
         )}
         <div
           ref={refRuler}
-          class="timeline relative h-[40px] min-w-screen select-none border-b-[1px] border-zinc-200"
-          onClick={(e) => e.preventDefault() /* Replace with your actual click handler */}
+          class="timeline min-w-screen relative h-[40px] select-none border-b-[1px] border-zinc-200"
+          onClick={(e) => {
+            e.preventDefault() /* Replace with your actual click handler */
+          }}
         >
           {Array.from({ length: duration.value * fps.value }, (_, i) => (
             <div

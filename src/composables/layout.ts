@@ -1,4 +1,4 @@
-export const useWindowLayoutStore = defineStore("windowLayout", () => {
+export const useWindowLayout = defineStore("windowLayout", () => {
   const windowWidth = "90vw"
   const windowHeight = "90vw"
   const topMenuHeight = 60

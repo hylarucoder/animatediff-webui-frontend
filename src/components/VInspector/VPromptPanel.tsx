@@ -1,17 +1,11 @@
 import { Button, Form, FormItem } from "ant-design-vue"
-import VPromptInput from "@/components/VPromptInput"
+import VPromptInput from "../VPromptInput.tsx"
 
 export default defineComponent({
   setup() {
-    const activeBlock = useActiveBlockStore()
-    const { block, refInput } = toRefs(activeBlock)
+    const activeBlock = useActiveClip()
+    const { block } = storeToRefs(activeBlock)
     const { onFocus, onBlur, deleteBlock } = activeBlock
-
-    onMounted(() => {
-      if (refInput.value) {
-        refInput.value.focus()
-      }
-    })
 
     return () => {
       if (!block.value) {
@@ -23,7 +17,6 @@ export default defineComponent({
               <FormItem label="Time"> {(block.value.start / 1000).toFixed(1)}s</FormItem>
               <FormItem label="Prompt">
                 <VPromptInput
-                  ref={refInput}
                   onFocus={onFocus}
                   onBlur={onBlur}
                   autoFocus

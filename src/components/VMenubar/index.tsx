@@ -3,12 +3,12 @@ import VModalExport from "@/components/VModalExport"
 
 export default defineComponent({
   setup() {
-    const formStore = useFormStore()
+    const formStore = useStoreForm()
     const { preset, project } = storeToRefs(formStore)
     const { loadPreset } = formStore
     const optionsStore = useOptionsStore()
     const { optPresets, optProjects, options } = storeToRefs(optionsStore)
-    const videoExportStore = useVideoExportStore()
+    const videoExportStore = useVideoPipeline()
     const { modalVisible } = storeToRefs(videoExportStore)
 
     const changePresets = (value: string) => {

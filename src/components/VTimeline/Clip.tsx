@@ -1,9 +1,9 @@
-import type { TTrackBlock } from "@/composables/timeline"
+import type { TClip } from "@/composables/timeline.ts"
 
 export default defineComponent({
   props: {
     block: {
-      type: Object as () => TTrackBlock,
+      type: Object as () => TClip,
       required: true,
     },
     isVirtual: Boolean,
@@ -11,10 +11,7 @@ export default defineComponent({
   },
   emits: ["blockSelect", "dragStart", "dragEnd", "click"],
   setup(props, { emit }) {
-    const block = ref(props.block)
-    const isVirtual = ref(props.isVirtual)
-    const left = computed(() => Math.floor(block.value.start / 5))
-    const blockWidth = computed(() => props.unitWidth)
+    const left = computed(() => Math.floor(props.block.start / 5))
     const selected = ref(false)
 
     const refBlock = ref<HTMLDivElement>()
@@ -23,9 +20,13 @@ export default defineComponent({
       selected.value = false
     })
 
-    const onClickBlock = (block: TTrackBlock) => {
+    const onClickBlock = (block: TClip) => {
       selected.value = true
-      emit("blockSelect", block)
+      if (!props.isVirtual) {
+        emit("blockSelect", block)
+      } else {
+        emit("click")
+      }
     }
 
     const onDragEnd = (e: DragEvent) => {
@@ -48,7 +49,7 @@ export default defineComponent({
       // Uncomment the following line if you want to remove the class after a delay
       // setTimeout(() => { target.classList.remove("dragend-animation") }, 500);
 
-      emit("dragEnd", block.value, relativeMousePosition.x)
+      emit("dragEnd", props.block, relativeMousePosition.x)
     }
 
     onMounted(() => {
@@ -60,22 +61,22 @@ export default defineComponent({
         ref={refBlock}
         class={{
           "timeline-track-block absolute m-0 flex h-[40px] items-center justify-center p-0 text-center": true,
-          "border-2 border-white": selected.value && !isVirtual.value,
+          "border-[1px]": selected.value && !props.isVirtual,
         }}
         style={{
-          width: `${blockWidth.value}px`,
+          width: `${props.unitWidth}px`,
           left: `${left.value}px`,
         }}
         draggable
-        onDragstart={() => emit("dragStart", block.value.start)}
+        onDragstart={() => emit("dragStart", props.block.start)}
         onDragend={onDragEnd}
-        onClick={() => onClickBlock(block.value)}
+        onClick={() => onClickBlock(props.block)}
       >
         <div
           class={{
             "mx-[1px] h-full text-xs": true,
-            "bg-amber-500": !isVirtual.value,
-            "bg-amber-300": isVirtual.value,
+            "bg-amber-500": !props.isVirtual,
+            "bg-amber-300": props.isVirtual,
           }}
           style={{
             height: "calc(100% - 4px)",

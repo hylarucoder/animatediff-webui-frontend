@@ -16,7 +16,7 @@ type TSubtask = {
   total: number
 }
 
-type TOverallTask = {
+type TOverallPipeline = {
   pid: number
   status: TStatus
   completed: number
@@ -27,7 +27,7 @@ type TOverallTask = {
   subtasks: TSubtask[]
 }
 
-const defaultTask: TOverallTask = {
+const defaultTask: TOverallPipeline = {
   pid: 0,
   status: TStatus.PENDING,
   completed: 0,
@@ -38,13 +38,13 @@ const defaultTask: TOverallTask = {
   processingInterrupted: true,
 }
 
-export const useVideoExportStore = defineStore("videoExport", () => {
+export const useVideoPipeline = defineStore("videoPipeline", () => {
   const modalVisible = ref(false)
-  const formStore = useFormStore()
-  const timelineStore = useTimelineStore()
+  const formStore = useStoreForm()
+  const timelineStore = useStoreTimeline()
   const { promptBlocks } = timelineStore
   const videoPlayerStore = useVideoPlayer()
-  const task = ref<TOverallTask>(defaultTask)
+  const pipeline = ref<TOverallPipeline>(defaultTask)
   const showModal = () => {
     modalVisible.value = true
   }
@@ -55,22 +55,22 @@ export const useVideoExportStore = defineStore("videoExport", () => {
   const { pause, resume, isActive } = useIntervalFn(async () => {
     try {
       const res = (await getTaskStatus({
-        pid: task.value.pid,
-      })) as TOverallTask
+        pid: pipeline.value.pid,
+      })) as TOverallPipeline
       console.log("resssw", res)
       if (!res?.pid) {
         console.log("error no pid", res)
-        task.value.status = TStatus.ERROR
+        pipeline.value.status = TStatus.ERROR
         pause()
         return
       }
-      task.value.pid = res.pid
-      task.value.status = res.status
-      task.value.completed = res.completed
-      task.value.total = res.total
-      task.value.subtasks = res.subtasks.filter((x) => x.completed > 0)
-      task.value.interruptProcessing = res.interruptProcessing
-      task.value.processingInterrupted = res.processingInterrupted
+      pipeline.value.pid = res.pid
+      pipeline.value.status = res.status
+      pipeline.value.completed = res.completed
+      pipeline.value.total = res.total
+      pipeline.value.subtasks = res.subtasks.filter((x) => x.completed > 0)
+      pipeline.value.interruptProcessing = res.interruptProcessing
+      pipeline.value.processingInterrupted = res.processingInterrupted
       if (res.status == "ERROR") {
         console.log("status error pause", res.status)
         pause()
@@ -80,7 +80,7 @@ export const useVideoExportStore = defineStore("videoExport", () => {
       if (!res?.videoPath) {
         return
       }
-      task.value.videoPath = res.videoPath
+      pipeline.value.videoPath = res.videoPath
       videoPlayerStore.loadVideo(formatProxyMedia(res.videoPath))
       hideModal()
       // player.reloadVideo()
@@ -90,11 +90,11 @@ export const useVideoExportStore = defineStore("videoExport", () => {
   onMounted(() => pause())
 
   const submitExport = async () => {
-    task.value.pid = 0
-    task.value.status = TStatus.PENDING
-    task.value.completed = 0
-    task.value.total = 100
-    task.value.videoPath = ""
+    pipeline.value.pid = 0
+    pipeline.value.status = TStatus.PENDING
+    pipeline.value.completed = 0
+    pipeline.value.total = 100
+    pipeline.value.videoPath = ""
 
     const data = {
       project: formStore.project,
@@ -119,18 +119,18 @@ export const useVideoExportStore = defineStore("videoExport", () => {
     }
     try {
       const res = await submitTask(data)
-      task.value.pid = res.pipeline.pid
+      pipeline.value.pid = res.pipeline.pid
       resume()
     } catch (e) {
       console.log("generate error", e)
       message.error(e.message)
-      task.value.status = TStatus.ERROR
+      pipeline.value.status = TStatus.ERROR
     }
   }
 
   const cancelExport = async () => {
     const data = {
-      pid: task.value.pid,
+      pid: pipeline.value.pid,
     }
     try {
       await interruptTask(data)
@@ -141,7 +141,7 @@ export const useVideoExportStore = defineStore("videoExport", () => {
   }
 
   return {
-    task,
+    task: pipeline,
     isActive,
     modalVisible,
     cancelExport,

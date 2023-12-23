@@ -1,4 +1,4 @@
-import { CONTROLNETS } from "@/consts"
+import { CONTROLNETS } from "@/consts.ts"
 import { Checkbox, CheckboxGroup, Form, FormItem } from "ant-design-vue"
 
 export default defineComponent({
@@ -10,7 +10,7 @@ export default defineComponent({
       return label.replaceAll("controlnet_", "")
     }
 
-    const timelineStore = useTimelineStore()
+    const timelineStore = useStoreTimeline()
     const { timeline } = storeToRefs(timelineStore)
 
     return () => (
